@@ -1,14 +1,13 @@
 package get_start
 
 import kotlinx.coroutines.*
-import java.sql.Time
 
 class StartFirstCoroutine {
     suspend fun startCoroutine(string: String) = coroutineScope {
         print("Hello $string")
     }
 
-    suspend fun getCoroutineList(): List<Job> {
+    fun getCoroutineList(): List<Job> {
         val coroutines = List(100) {
             runBlocking {
                 launch { println("") }
@@ -19,7 +18,7 @@ class StartFirstCoroutine {
 
 }
 
-fun main(array: Array<String>) {
+fun main() {
     val firstCoroutine = StartFirstCoroutine()
     runBlocking {
         (Dispatchers.IO) {
