@@ -1,12 +1,20 @@
 package get_start
 
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
+import java.sql.Time
 
 class StartFirstCoroutine {
-    suspend fun startMakeCoroutine(string: String) {
+    suspend fun startCoroutine(string: String) = coroutineScope {
         print("Hello $string")
+    }
+
+    suspend fun getCoroutineList(): List<Job> {
+        val coroutines = List(100) {
+            runBlocking {
+                launch { println("") }
+            }
+        }
+        return coroutines
     }
 
 }
@@ -14,10 +22,16 @@ class StartFirstCoroutine {
 fun main(array: Array<String>) {
     val firstCoroutine = StartFirstCoroutine()
     runBlocking {
-        launch {
-            delay(5000L)
-            firstCoroutine.startMakeCoroutine("2")
+        (Dispatchers.IO) {
+            for (i in 0..1000) {
+                firstCoroutine.startCoroutine("$i ")
+            }
+
+            async {
+                firstCoroutine.getCoroutineList().forEach { it.cancel() }
+                print("Done")
+            }.await()
         }
-        firstCoroutine.startMakeCoroutine("1")
     }
 }
+
