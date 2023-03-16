@@ -35,10 +35,33 @@ class MyContextCoroutine {
     }
 }
 
+class SimpleParentJob {
+
+    fun run() = runBlocking {
+        val request = launch {
+            repeat(5) { it ->
+                launch {
+                    delay((it + 1) * 200L)
+                    println("coroutine $it is done")
+                }
+            }
+            println("Waited ny children threads")
+        }
+        request.join()
+        println("Processing is done")
+    }
+}
+
 fun main() {
+
     val contextCoroutine = MyContextCoroutine()
     val listOfDispatchers = contextCoroutine.listOfDispatchers()
     contextCoroutine.getCurrentThread(listOfDispatchers)
+
+
     println("________________________")
     contextCoroutine.fromOneThreadToAnother()
+
+    val simpleParentJob = SimpleParentJob()
+    simpleParentJob.run()
 }
